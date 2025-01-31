@@ -26,10 +26,9 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(glm SDL2 SDL2_image)
 
-add_executable("${PROJECT_NAME}"
-  src/engine/logging/logger.cpp
-  src/engine/messaging/messenger.cpp
-  src/game/main.cpp)
+add_executable("${PROJECT_NAME}")
+add_subdirectory(src/engine)
+add_subdirectory(src/game)
 
 target_link_libraries("${PROJECT_NAME}"
   PRIVATE glm::glm-header-only
