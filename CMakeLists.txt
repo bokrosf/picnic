@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable("${PROJECT_NAME}"
+  src/engine/logging/logger.cpp
   src/game/main.cpp)
 
 target_include_directories("${PROJECT_NAME}"
