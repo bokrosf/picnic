@@ -3,7 +3,6 @@
 
 #include <engine/app_configuration.h>
 #include <engine/app_event.h>
-#include <engine/collision/collision_engine.h>
 #include <engine/component_added.h>
 #include <engine/component_destroyed.h>
 #include <engine/entity_created.h>
@@ -41,7 +40,6 @@ private:
         
     const app_configuration _configuration;
     bool _running;
-    collision_engine _collision_engine;
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <engine/app.h>
+#include <engine/collision/collision_engine.h>
 #include <engine/display.h>
 #include <engine/time/game_time.h>
 #include <engine/input.h>
@@ -40,7 +41,7 @@ void app::run()
     {
         const int original_scene_id = scene_loader::active().id();
         scene_loader::active().initialize_objects();
-        _collision_engine.detect_collisions(scene_loader::active());
+        collision_engine::detect_collisions(scene_loader::active());
         input::read_events();
         handle_user_input();
         gameplay_engine::update(scene_loader::active());
