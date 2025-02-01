@@ -6,41 +6,32 @@
 #include <engine/rendering/rendering_engine.h>
 #include <engine/subsystem_initialization_failed.h>
 
-rendering_engine::rendering_engine()
-    : _initialized(false)
-    , _renderer(nullptr)
+namespace
 {
-}
-
-rendering_engine::~rendering_engine()
-{
-    shutdown();
+    SDL_Renderer *native_renderer = nullptr;
 }
 
 void rendering_engine::initialize(SDL_Window &window)
 {
-    if (_initialized)
+    if (native_renderer)
     {
         throw std::logic_error("Rendering engine already initialized.");
     }
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(&window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    native_renderer = SDL_CreateRenderer(&window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    if (!renderer)
+    if (!native_renderer)
     {
         throw subsystem_initialization_failed(std::string("SDL Renderer creation failed. ").append(SDL_GetError()));
     }
-
-    _renderer = renderer;
-    _initialized = true;
 }
 
 void rendering_engine::shutdown()
 {
-    if (_renderer)
+    if (native_renderer)
     {
-        SDL_DestroyRenderer(_renderer);
-        _renderer = nullptr;
+        SDL_DestroyRenderer(native_renderer);
+        native_renderer = nullptr;
     }
 }
 
@@ -59,16 +50,16 @@ void rendering_engine::render(const scene &scene)
         }
     }
 
-    SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
-    SDL_RenderClear(_renderer);
+    SDL_SetRenderDrawColor(native_renderer, 0, 0, 0, 255);
+    SDL_RenderClear(native_renderer);
 
     for (const auto &[layer, renderers] : rendering_layers)
     {
         for (renderer *r : renderers)
         {
-            r->render(_renderer);
+            r->render(native_renderer);
         }
     }
 
-    SDL_RenderPresent(_renderer);
+    SDL_RenderPresent(native_renderer);
 }

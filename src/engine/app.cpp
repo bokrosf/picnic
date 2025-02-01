@@ -5,6 +5,7 @@
 #include <engine/time/game_time.h>
 #include <engine/input.h>
 #include <engine/messaging/messenger.h>
+#include <engine/rendering/rendering_engine.h>
 #include <engine/scene/scene_loader.h>
 #include <engine/subsystem_initialization_failed.h>
 
@@ -43,7 +44,7 @@ void app::run()
         handle_user_input();
         _gameplay_engine.update(scene_loader::active());
         scene_loader::active().destroy_marked_objects();
-        _rendering_engine.render(scene_loader::active());
+        rendering_engine::render(scene_loader::active());
         scene_loader::commit();
 
         if (scene_loader::active().id() == original_scene_id)
@@ -116,8 +117,8 @@ void app::initialize_subsystems()
     }
 
     display::initialize(_configuration.title);
+    rendering_engine::initialize(display::window());
     scene_loader::initialize();
-    _rendering_engine.initialize(display::window());
 }
 
 void app::shutdown()
@@ -129,8 +130,8 @@ void app::shutdown()
     messenger::unsubscribe<component_destroyed>(*this);
     messenger::unsubscribe<entity_parent_changed>(*this);
     messenger::unsubscribe<scene_destroyed>(*this);
-    _rendering_engine.shutdown();
     scene_loader::shutdown();
+    rendering_engine::shutdown();
     display::shutdown();
     IMG_Quit();
     SDL_Quit();
