@@ -2,8 +2,8 @@
 #include <string>
 #include <queue>
 #include <engine/messaging/messenger.h>
-#include <engine/scene_destroyed.h>
-#include <engine/scene_loader.h>
+#include <engine/scene/scene_destroyed.h>
+#include <engine/scene/scene_loader.h>
 
 namespace
 {

@@ -1,5 +1,5 @@
-#ifndef ENGINE_SCENE_H
-#define ENGINE_SCENE_H
+#ifndef ENGINE_SCENE_SCENE_H
+#define ENGINE_SCENE_SCENE_H
 
 #include <functional>
 #include <generator>

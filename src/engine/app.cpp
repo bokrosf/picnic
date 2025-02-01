@@ -5,7 +5,7 @@
 #include <engine/time/game_time.h>
 #include <engine/input.h>
 #include <engine/messaging/messenger.h>
-#include <engine/scene_loader.h>
+#include <engine/scene/scene_loader.h>
 #include <engine/subsystem_initialization_failed.h>
 
 app::app(const app_configuration &configuration)

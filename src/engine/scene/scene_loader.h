@@ -5,7 +5,7 @@
 #include <functional>
 #include <unordered_map>
 #include <utility>
-#include <engine/scene.h>
+#include <engine/scene/scene.h>
 
 namespace scene_loader
 {

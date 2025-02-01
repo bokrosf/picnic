@@ -5,7 +5,7 @@
 #include <engine/collision/box_collider.h>
 #include <engine/collision/collision_handler.h>
 #include <engine/entity.h>
-#include <engine/scene.h>
+#include <engine/scene/scene.h>
 
 class collision_engine
 {

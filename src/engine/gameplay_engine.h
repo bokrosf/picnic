@@ -1,7 +1,7 @@
 #ifndef ENGINE_GAMEPLAYENGINE_H
 #define ENGINE_GAMEPLAYENGINE_H
 
-#include <engine/scene.h>
+#include <engine/scene/scene.h>
 
 class gameplay_engine
 {

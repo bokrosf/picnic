@@ -5,7 +5,7 @@
 #include <engine/entity.h>
 #include <engine/entity_name_collision.h>
 #include <engine/life_state.h>
-#include <engine/scene.h>
+#include <engine/scene/scene.h>
 
 scene::scene(int id)
     : _id(id)

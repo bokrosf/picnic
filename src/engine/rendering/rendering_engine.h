@@ -3,7 +3,7 @@
 
 #include <string>
 #include <SDL2/SDL.h>
-#include <engine/scene.h>
+#include <engine/scene/scene.h>
 
 class rendering_engine
 {

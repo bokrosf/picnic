@@ -12,7 +12,7 @@
 #include <engine/gameplay_engine.h>
 #include <engine/messaging/recipient.h>
 #include <engine/rendering/rendering_engine.h>
-#include <engine/scene_destroyed.h>
+#include <engine/scene/scene_destroyed.h>
 
 class app : 
     public recipient<app_event>,

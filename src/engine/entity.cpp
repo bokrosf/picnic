@@ -3,7 +3,7 @@
 #include <engine/entity_created.h>
 #include <engine/entity_destroyed.h>
 #include <engine/entity_parent_changed.h>
-#include <engine/scene.h>
+#include <engine/scene/scene.h>
 
 entity::entity(const std::string &name)
     : _scene(nullptr)
