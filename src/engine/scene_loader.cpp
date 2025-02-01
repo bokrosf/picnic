@@ -1,80 +1,97 @@
 #include <stdexcept>
 #include <string>
+#include <queue>
 #include <engine/messaging/messenger.h>
 #include <engine/scene_destroyed.h>
 #include <engine/scene_loader.h>
 
-scene_loader::scene_loader()
-    : _last_loaded_id(-1)
-    , _active_scene(nullptr)
+namespace
 {
+    const int default_loaded_id = -1;
+    scene *active_scene = nullptr;
+    std::queue<scene_loader::operation> operations;
 }
 
-scene_loader::~scene_loader()
+int scene_loader::detail::last_loaded_id = default_loaded_id;
+std::unordered_map<int, scene *> scene_loader::detail::loaded_scenes;
+
+void scene_loader::initialize()
 {
-    unload_all();
+    using namespace detail;
+
+    last_loaded_id = default_loaded_id;
+    active_scene = nullptr;
+}
+
+void scene_loader::shutdown()
+{
+    using namespace scene_loader::detail;
+
+    for (auto [id, scene] : loaded_scenes)
+    {
+        delete scene;
+        messenger::send(scene_destroyed{id});
+    }
+    
+    loaded_scenes.clear();
+    active_scene = nullptr;
+    last_loaded_id = default_loaded_id;
 }
 
 void scene_loader::unload(int id)
 {
-    if (!_loaded_scenes.contains(id))
+    using namespace scene_loader::detail;
+
+    if (!loaded_scenes.contains(id))
     {
         throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
     }
 
-    auto node = _loaded_scenes.extract(id);
+    auto node = loaded_scenes.extract(id);
     
-    if (node.mapped() == _active_scene)
+    if (node.mapped() == active_scene)
     {
-        _active_scene = nullptr;
+        active_scene = nullptr;
     }
     
     delete node.mapped();
     messenger::send(scene_destroyed{id});
 }
 
-void scene_loader::unload_all()
-{
-    for (auto [id, scene] : _loaded_scenes)
-    {
-        delete scene;
-        messenger::send(scene_destroyed{id});
-    }
-    
-    _loaded_scenes.clear();
-    _active_scene = nullptr;
-}
-
 void scene_loader::activate(int id)
 {
-    if (!_loaded_scenes.contains(id))
+    using namespace scene_loader::detail;
+
+    if (!loaded_scenes.contains(id))
     {
         throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
     }
 
-    _active_scene = _loaded_scenes[id];
+    active_scene = loaded_scenes[id];
 }
 
-scene &scene_loader::active() const
+scene &scene_loader::active()
 {
-    if (!_active_scene)
+    using namespace scene_loader::detail;
+
+    if (!active_scene)
     {
         throw std::runtime_error("There is no active scene.");
     }
 
-    return *_active_scene;
+    return *active_scene;
 }
 
 void scene_loader::queue(operation operation)
 {
-    _operations.push(operation);
+    operations.push(operation);
 }
 
 void scene_loader::commit()
 {
-    while (!_operations.empty())
+    while (!operations.empty())
     {
-        _operations.front()(*this);
-        _operations.pop();
+        operations.front()();
+        operations.pop();
     }
 }

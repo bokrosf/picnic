@@ -3,46 +3,46 @@
 
 #include <concepts>
 #include <functional>
-#include <queue>
 #include <unordered_map>
 #include <utility>
 #include <engine/scene.h>
 
-class scene_loader final
+namespace scene_loader
 {
-public:
-    using operation = std::function<void(scene_loader &)>;
-
-    scene_loader();
-    ~scene_loader();    
+    using operation = std::function<void()>;
+    
+    void initialize();
+    void shutdown();
 
     template<typename Scene, typename... Args>
         requires std::derived_from<Scene, scene>
     int load(Args &&...args);
 
     void unload(int id);
-    void unload_all();
     void activate(int id);
-    scene &active() const;
+    scene &active();
     void queue(operation operation);
     void commit();
-private:
-    int _last_loaded_id;
-    std::unordered_map<int, scene *> _loaded_scenes;
-    scene *_active_scene;
-    std::queue<operation> _operations;
-};
+
+    namespace detail
+    {
+        extern int last_loaded_id;
+        extern std::unordered_map<int, scene *> loaded_scenes;
+    }
+}
 
 template<typename Scene, typename... Args>
     requires std::derived_from<Scene, scene>
 int scene_loader::load(Args &&...args)
 {
+    using namespace detail;
+    
     Scene *scene = nullptr;
 
     try
     {
-        scene = new Scene(++_last_loaded_id, std::forward<Args>(args)...);
-        _loaded_scenes[scene->id()] = scene;
+        scene = new Scene(++last_loaded_id, std::forward<Args>(args)...);
+        loaded_scenes[scene->id()] = scene;
     }
     catch (...)
     {
