@@ -4,6 +4,7 @@
 #include <engine/display.h>
 #include <engine/time/game_time.h>
 #include <engine/input.h>
+#include <engine/gameplay_engine.h>
 #include <engine/messaging/messenger.h>
 #include <engine/rendering/rendering_engine.h>
 #include <engine/scene/scene_loader.h>
@@ -42,7 +43,7 @@ void app::run()
         _collision_engine.detect_collisions(scene_loader::active());
         input::read_events();
         handle_user_input();
-        _gameplay_engine.update(scene_loader::active());
+        gameplay_engine::update(scene_loader::active());
         scene_loader::active().destroy_marked_objects();
         rendering_engine::render(scene_loader::active());
         scene_loader::commit();

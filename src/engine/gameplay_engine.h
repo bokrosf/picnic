@@ -3,9 +3,8 @@
 
 #include <engine/scene/scene.h>
 
-class gameplay_engine
+namespace gameplay_engine
 {
-public:
     void update(const scene &scene);
 };
 

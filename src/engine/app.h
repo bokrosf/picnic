@@ -9,7 +9,6 @@
 #include <engine/entity_created.h>
 #include <engine/entity_destroyed.h>
 #include <engine/entity_parent_changed.h>
-#include <engine/gameplay_engine.h>
 #include <engine/messaging/recipient.h>
 #include <engine/scene/scene_destroyed.h>
 
@@ -43,7 +42,6 @@ private:
     const app_configuration _configuration;
     bool _running;
     collision_engine _collision_engine;
-    gameplay_engine _gameplay_engine;
 };
 
 #endif
