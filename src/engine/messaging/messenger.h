@@ -15,8 +15,8 @@ namespace messenger
     template<typename Message, typename Recipient>
     void subscribe(Recipient *recipient, void (Recipient::* handler)(const Message &));
 
-    template<typename Message, typename Recipient>
-    void unsubscribe(Recipient *recipient);
+    template<typename Message>
+    void unsubscribe(void *recipient);
 
     namespace detail
     {
@@ -73,8 +73,8 @@ void messenger::subscribe(Recipient *recipient, void (Recipient::* handler)(cons
     });
 }
 
-template<typename Message, typename Recipient>
-void messenger::unsubscribe(Recipient *recipient)
+template<typename Message>
+void messenger::unsubscribe(void *recipient)
 {
     using namespace messenger::detail;
 
