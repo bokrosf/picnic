@@ -25,13 +25,13 @@ app::~app()
 void app::run()
 {
     initialize_subsystems();
-    messenger::subscribe<app_event>(*this);
-    messenger::subscribe<entity_created>(*this);
-    messenger::subscribe<entity_destroyed>(*this);
-    messenger::subscribe<component_added>(*this);
-    messenger::subscribe<component_destroyed>(*this);
-    messenger::subscribe<entity_parent_changed>(*this);
-    messenger::subscribe<scene_destroyed>(*this);
+    messenger::subscribe(this, &app::handle_app_event);
+    messenger::subscribe(this, &app::create_entity);
+    messenger::subscribe(this, &app::destroy_entity);
+    messenger::subscribe(this, &app::add_component);
+    messenger::subscribe(this, &app::destroy_component);
+    messenger::subscribe(this, &app::change_entity_parent);
+    messenger::subscribe(this, &app::destroy_scene);
     load_start_scene();
     scene_loader::commit();
     game_time::reset(scene_loader::active().id());
@@ -62,44 +62,6 @@ void app::run()
     shutdown();
 }
 
-void app::receive(const app_event &message)
-{
-    if (message == app_event::exit_requested)
-    {
-        _running = false;
-    }
-}
-
-void app::receive(const entity_created &message)
-{
-    scene_loader::active().add(message.created);
-}
-
-void app::receive(const entity_destroyed &message)
-{
-    scene_loader::active().mark_as_destroyed(message.entity);
-}
-
-void app::receive(const component_added &message)
-{
-    scene_loader::active().add(message.added);
-}
-
-void app::receive(const component_destroyed &message)
-{
-    scene_loader::active().mark_as_destroyed(message.component);
-}
-
-void app::receive(const entity_parent_changed &message)
-{
-    scene_loader::active().update_root_status(message.entity);
-}
-
-void app::receive(const scene_destroyed &message)
-{
-    game_time::erase(message.id);
-}
-
 void app::initialize_subsystems()
 {
     if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_VIDEO) != 0)
@@ -125,13 +87,13 @@ void app::initialize_subsystems()
 
 void app::shutdown()
 {
-    messenger::unsubscribe<app_event>(*this);
-    messenger::unsubscribe<entity_created>(*this);
-    messenger::unsubscribe<entity_destroyed>(*this);
-    messenger::unsubscribe<component_added>(*this);
-    messenger::unsubscribe<component_destroyed>(*this);
-    messenger::unsubscribe<entity_parent_changed>(*this);
-    messenger::unsubscribe<scene_destroyed>(*this);
+    messenger::unsubscribe<app_event>(this);
+    messenger::unsubscribe<entity_created>(this);
+    messenger::unsubscribe<entity_destroyed>(this);
+    messenger::unsubscribe<component_added>(this);
+    messenger::unsubscribe<component_destroyed>(this);
+    messenger::unsubscribe<entity_parent_changed>(this);
+    messenger::unsubscribe<scene_destroyed>(this);
     scene_loader::shutdown();
     rendering_engine::shutdown();
     display::shutdown();
@@ -145,4 +107,42 @@ void app::handle_user_input()
     {
         _running = false;
     }
+}
+
+void app::handle_app_event(const app_event &message)
+{
+    if (message == app_event::exit_requested)
+    {
+        _running = false;
+    }
+}
+
+void app::create_entity(const entity_created &message)
+{
+    scene_loader::active().add(message.created);
+}
+
+void app::destroy_entity(const entity_destroyed &message)
+{
+    scene_loader::active().mark_as_destroyed(message.entity);
+}
+
+void app::add_component(const component_added &message)
+{
+    scene_loader::active().add(message.added);
+}
+
+void app::destroy_component(const component_destroyed &message)
+{
+    scene_loader::active().mark_as_destroyed(message.component);
+}
+
+void app::change_entity_parent(const entity_parent_changed &message)
+{
+    scene_loader::active().update_root_status(message.entity);
+}
+
+void app::destroy_scene(const scene_destroyed &message)
+{
+    game_time::erase(message.id);
 }
