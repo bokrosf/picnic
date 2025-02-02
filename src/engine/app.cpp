@@ -87,13 +87,7 @@ void app::initialize_subsystems()
 
 void app::shutdown()
 {
-    messenger::unsubscribe<app_event>(this);
-    messenger::unsubscribe<entity_created>(this);
-    messenger::unsubscribe<entity_destroyed>(this);
-    messenger::unsubscribe<component_added>(this);
-    messenger::unsubscribe<component_destroyed>(this);
-    messenger::unsubscribe<entity_parent_changed>(this);
-    messenger::unsubscribe<scene_destroyed>(this);
+    messenger::unsubscribe_all(this);
     scene_loader::shutdown();
     rendering_engine::shutdown();
     display::shutdown();
