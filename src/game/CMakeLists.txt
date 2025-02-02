@@ -1,2 +1,6 @@
+add_subdirectory(scene)
+
 target_sources("${PROJECT_NAME}" PRIVATE
-  main.cpp)
+  main.cpp
+  picnic_app.cpp
+)

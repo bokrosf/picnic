@@ -25,17 +25,7 @@ void scene_loader::initialize()
 
 void scene_loader::shutdown()
 {
-    using namespace scene_loader::detail;
-
-    for (auto [id, scene] : loaded_scenes)
-    {
-        delete scene;
-        messenger::send(scene_destroyed{id});
-    }
-    
-    loaded_scenes.clear();
-    active_scene = nullptr;
-    last_loaded_id = default_loaded_id;
+    unload_all();
 }
 
 void scene_loader::unload(int id)
@@ -56,6 +46,20 @@ void scene_loader::unload(int id)
     
     delete node.mapped();
     messenger::send(scene_destroyed{id});
+}
+
+void scene_loader::unload_all()
+{
+    using namespace scene_loader::detail;
+
+    for (auto [id, scene] : loaded_scenes)
+    {
+        delete scene;
+        messenger::send(scene_destroyed{id});
+    }
+
+    loaded_scenes.clear();
+    active_scene = nullptr;
 }
 
 void scene_loader::activate(int id)

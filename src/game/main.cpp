@@ -1,8 +1,24 @@
+#include <exception>
 #include <iostream>
+#include <engine/logging/logger.h>
+#include <game/picnic_app.h>
 
 int main(int argc, char **argv)
 {
-    std::cout << "Picnic game" << std::endl;
+    logger::destination(std::cout);
+    app *app = nullptr;
+
+    try
+    {
+        app = new picnic_app(app_configuration{"Picnic"});
+        app->run();
+    }
+    catch (std::exception &ex)
+    {
+        logger::error(ex.what());
+    }
+
+    delete app;
 
     return 0;
 }
