@@ -8,12 +8,8 @@ void messenger::unsubscribe_all(void *recipient)
 {
     using namespace detail;
 
-    if (!subscriptions_by_recipient.contains(recipient))
-    {
-        return;
-    }
-
-    while (!subscriptions_by_recipient[recipient].empty())
+    while (subscriptions_by_recipient.contains(recipient)
+        && !subscriptions_by_recipient[recipient].empty())
     {
         unsubscribe(recipient, subscriptions_by_recipient[recipient].front());
     }
