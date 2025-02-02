@@ -18,6 +18,8 @@ namespace messenger
     template<typename Message>
     void unsubscribe(void *recipient);
 
+    void unsubscribe_all(void *recipient);
+
     namespace detail
     {
         struct subscription
@@ -28,7 +30,10 @@ namespace messenger
         };
 
         extern std::unordered_map<std::type_index, std::vector<subscription>> subscriptions_by_type;
+        extern std::unordered_map<void *, std::vector<std::type_index>> subscriptions_by_recipient;
         extern bool sending;
+
+        void unsubscribe(void *recipient, const std::type_index &message_type);
     }
 }
 
@@ -37,22 +42,27 @@ void messenger::send(const Message &message)
 {
     using namespace messenger::detail;
 
-    std::type_index key = std::type_index(typeid(Message));
+    std::type_index message_type = std::type_index(typeid(Message));
 
-    if (!subscriptions_by_type.contains(key))
+    if (!subscriptions_by_type.contains(message_type))
     {
         return;
     }
 
     sending = true;
 
-    for (auto &s : subscriptions_by_type[key])
+    for (auto &s : subscriptions_by_type[message_type])
     {
         s.handler(&message);
     }
 
     sending = false;
-    std::erase_if(subscriptions_by_type[key], [](const auto &s) { return s.removed; });
+    std::erase_if(subscriptions_by_type[message_type], [](const auto &s) { return s.removed; });
+
+    if (subscriptions_by_type[message_type].empty())
+    {
+        subscriptions_by_type.erase(message_type);
+    }
 }
 
 template<typename Message, typename Recipient>
@@ -60,9 +70,9 @@ void messenger::subscribe(Recipient *recipient, void (Recipient::* handler)(cons
 {
     using namespace messenger::detail;
 
-    std::type_index key = std::type_index(typeid(Message));
+    std::type_index message_type = std::type_index(typeid(Message));
 
-    subscriptions_by_type[key].emplace_back(subscription
+    subscriptions_by_type[message_type].emplace_back(subscription
     {
         .recipient = recipient,
         .removed = false,
@@ -71,6 +81,8 @@ void messenger::subscribe(Recipient *recipient, void (Recipient::* handler)(cons
             (recipient->*handler)(*reinterpret_cast<const Message *>(message));
         }
     });
+
+    subscriptions_by_recipient[recipient].push_back(message_type);
 }
 
 template<typename Message>
@@ -78,24 +90,7 @@ void messenger::unsubscribe(void *recipient)
 {
     using namespace messenger::detail;
 
-    std::type_index key = std::type_index(typeid(Message));
-
-    if (!subscriptions_by_type.contains(key))
-    {
-        return;
-    }
-
-    if (sending)
-    {
-        for (auto &s : subscriptions_by_type[key] | std::views::filter([recipient](const auto &s) { return s.recipient == recipient; }))
-        {
-            s.removed = true;
-        }
-    }
-    else
-    {
-        std::erase_if(subscriptions_by_type[key], [recipient](const auto &s) { return s.recipient == recipient; });
-    }
+    unsubscribe(recipient, std::type_index(typeid(Message)));
 }
 
 #endif
