@@ -22,7 +22,7 @@ namespace messenger
     {
         struct subscription
         {
-            void *object;
+            void *recipient;
             bool removed;
             std::function<void(const void *)> handler;
         };
@@ -64,7 +64,7 @@ void messenger::subscribe(Recipient *recipient, void (Recipient::* handler)(cons
 
     subscriptions[key].emplace_back(subscription
     {
-        .object = recipient,
+        .recipient = recipient,
         .removed = false,
         .handler = [recipient, handler](const void *message)
         {
@@ -87,14 +87,14 @@ void messenger::unsubscribe(void *recipient)
 
     if (sending)
     {
-        for (auto &s : subscriptions[key] | std::views::filter([recipient](const auto &s) { return s.object == recipient; }))
+        for (auto &s : subscriptions[key] | std::views::filter([recipient](const auto &s) { return s.recipient == recipient; }))
         {
             s.removed = true;
         }
     }
     else
     {
-        std::erase_if(subscriptions[key], [recipient](const auto &s) { return s.object == recipient; });
+        std::erase_if(subscriptions[key], [recipient](const auto &s) { return s.recipient == recipient; });
     }
 }
 
