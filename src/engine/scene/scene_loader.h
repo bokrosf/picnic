@@ -19,6 +19,7 @@ namespace scene_loader
     int load(Args &&...args);
 
     void unload(int id);
+    void unload_all();
     void activate(int id);
     scene &active();
     void queue(operation operation);
