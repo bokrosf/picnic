@@ -27,7 +27,7 @@ namespace messenger
             std::function<void(const void *)> handler;
         };
 
-        extern std::unordered_map<std::type_index, std::vector<subscription>> subscriptions;
+        extern std::unordered_map<std::type_index, std::vector<subscription>> subscriptions_by_type;
         extern bool sending;
     }
 }
@@ -39,20 +39,20 @@ void messenger::send(const Message &message)
 
     std::type_index key = std::type_index(typeid(Message));
 
-    if (!subscriptions.contains(key))
+    if (!subscriptions_by_type.contains(key))
     {
         return;
     }
 
     sending = true;
 
-    for (auto &s : subscriptions[key])
+    for (auto &s : subscriptions_by_type[key])
     {
         s.handler(&message);
     }
 
     sending = false;
-    std::erase_if(subscriptions[key], [](const auto &s) { return s.removed; });
+    std::erase_if(subscriptions_by_type[key], [](const auto &s) { return s.removed; });
 }
 
 template<typename Message, typename Recipient>
@@ -62,7 +62,7 @@ void messenger::subscribe(Recipient *recipient, void (Recipient::* handler)(cons
 
     std::type_index key = std::type_index(typeid(Message));
 
-    subscriptions[key].emplace_back(subscription
+    subscriptions_by_type[key].emplace_back(subscription
     {
         .recipient = recipient,
         .removed = false,
@@ -80,21 +80,21 @@ void messenger::unsubscribe(void *recipient)
 
     std::type_index key = std::type_index(typeid(Message));
 
-    if (!subscriptions.contains(key))
+    if (!subscriptions_by_type.contains(key))
     {
         return;
     }
 
     if (sending)
     {
-        for (auto &s : subscriptions[key] | std::views::filter([recipient](const auto &s) { return s.recipient == recipient; }))
+        for (auto &s : subscriptions_by_type[key] | std::views::filter([recipient](const auto &s) { return s.recipient == recipient; }))
         {
             s.removed = true;
         }
     }
     else
     {
-        std::erase_if(subscriptions[key], [recipient](const auto &s) { return s.recipient == recipient; });
+        std::erase_if(subscriptions_by_type[key], [recipient](const auto &s) { return s.recipient == recipient; });
     }
 }
 
