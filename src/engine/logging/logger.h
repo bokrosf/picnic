@@ -42,25 +42,33 @@ namespace logger
 template<typename... Args>
 void logger::debug(Args &&...args)
 {
-    detail::write(detail::log_level::debug, args...);
+    using namespace detail;
+
+    write(log_level::debug, args...);
 }
 
 template<typename... Args>
 void logger::information(Args &&...args)
 {
-    detail::write(detail::log_level::information, args...);
+    using namespace detail;
+
+    write(log_level::information, args...);
 }
 
 template<typename... Args>
 void logger::warning(Args &&...args)
 {
-    detail::write(detail::log_level::warning, args...);
+    using namespace detail;
+
+    write(log_level::warning, args...);
 }
 
 template<typename... Args>
 void logger::error(Args &&...args)
 {
-    detail::write(detail::log_level::error, args...);
+    using namespace detail;
+
+    write(log_level::error, args...);
 }
 
 template<typename... Args>
