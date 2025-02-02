@@ -1,7 +1,6 @@
 #ifndef ENGINE_RENDERING_RENDERINGENGINE_H
 #define ENGINE_RENDERING_RENDERINGENGINE_H
 
-#include <string>
 #include <SDL2/SDL.h>
 #include <engine/scene/scene.h>
 
