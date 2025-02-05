@@ -2,6 +2,11 @@
 
 Engine architectural decisions, problems. Used as a development diary to look back later on the process.
 
+# Imported engine code from snake project
+2025-02-01
+
+Imported basic engine classes from the snake project because this engine will use the same Entity Component System architecture and considered an evolution of the previous engine. The concepts are similar but in some cases it favours modules instead of classes.
+
 # SDL2 lib referencing
 2025-01-31
 
