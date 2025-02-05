@@ -2,6 +2,11 @@
 
 Engine architectural decisions, problems. Used as a development diary to look back later on the process.
 
+# SDL2 lib referencing
+2025-01-31
+
+There is no seperate **lib/<library_name>/include** directory because dependencies managed entirely by CMake configuration. Only the SDL_image header copied to the SDL2 dependency's include directory because it references SDL2 header.
+
 # glm library usage
 2025-01-31
 
