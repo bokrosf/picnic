@@ -9,7 +9,7 @@ namespace assett
 {
     using id_type = unsigned int;
 
-    void initialize();
+    void initialize(SDL_Renderer &renderer);
     void shutdown();
     std::optional<id_type> load(const std::string &file_path);
     void unload_all();
