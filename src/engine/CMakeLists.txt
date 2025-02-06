@@ -9,6 +9,7 @@ add_subdirectory(time)
 target_sources("${PROJECT_NAME}" PRIVATE
   activatable.cpp
   app.cpp
+  assett.cpp
   display.cpp
   entity.cpp
   entity_name_collision.cpp
