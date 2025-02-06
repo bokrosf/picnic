@@ -13,3 +13,13 @@ void assett::initialize()
 {
     last_loaded_id = -1;
 }
+
+void assett::unload_all()
+{
+    for (auto [id, t] : textures)
+    {
+        SDL_DestroyTexture(t);
+    }
+
+    textures.clear();
+}
