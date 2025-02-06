@@ -11,6 +11,7 @@ namespace assett
 
     void initialize(SDL_Renderer &renderer);
     void shutdown();
+    int supported_image_types();
     std::optional<id_type> load(const std::string &file_path);
     void unload_all();
     SDL_Texture *texture(id_type id);

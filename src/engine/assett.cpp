@@ -28,6 +28,11 @@ void assett::shutdown()
     renderer = nullptr;
 }
 
+int assett::supported_image_types()
+{
+    return IMG_INIT_PNG | IMG_INIT_JPG;
+}
+
 std::optional<assett::id_type> assett::load(const std::string &file_path)
 {
     std::optional<assett::id_type> id;
