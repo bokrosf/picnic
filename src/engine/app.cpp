@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <engine/app.h>
+#include <engine/assett.h>
 #include <engine/collision/collision_engine.h>
 #include <engine/display.h>
 #include <engine/time/game_time.h>
@@ -69,19 +70,9 @@ void app::initialize_subsystems()
         throw subsystem_initialization_failed(std::string("SDL initialization failed.").append(SDL_GetError()));
     }
 
-    int img_flags = IMG_INIT_PNG | IMG_INIT_JPG;
-
-    if (int initialized_flags = IMG_Init(img_flags); initialized_flags != img_flags)
-    {
-        throw subsystem_initialization_failed(
-            std::string("SDL Image initilaization failed. requested: ")
-                .append(std::to_string(img_flags))
-                .append("initialized: ")
-                .append(std::to_string(initialized_flags)));
-    }
-
     display::initialize(_configuration.title);
     rendering_engine::initialize(display::window());
+    assett::initialize(*SDL_GetRenderer(&display::window()));
     scene_loader::initialize();
 }
 
@@ -89,6 +80,7 @@ void app::shutdown()
 {
     messenger::unsubscribe_all(this);
     scene_loader::shutdown();
+    assett::shutdown();
     rendering_engine::shutdown();
     display::shutdown();
     IMG_Quit();
