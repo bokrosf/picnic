@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <engine/assett.h>
+#include <engine/subsystem_initialization_failed.h>
 
 namespace
 {
@@ -18,6 +19,18 @@ void assett::initialize(SDL_Renderer &renderer)
         throw std::logic_error("assett module already initialized.");
     }
 
+    int image_types = IMG_INIT_PNG | IMG_INIT_JPG;
+    int initialized_types = IMG_Init(image_types);
+
+    if (initialized_types != image_types)
+    {
+        throw subsystem_initialization_failed(
+            std::string("SDL Image initilaization failed. requested: ")
+                .append(std::to_string((image_types)))
+                .append("initialized: ")
+                .append(std::to_string(initialized_types)));
+    }
+
     ::renderer = &renderer;
     last_loaded_id = -1;
 }
@@ -26,11 +39,6 @@ void assett::shutdown()
 {
     unload_all();
     renderer = nullptr;
-}
-
-int assett::supported_image_types()
-{
-    return IMG_INIT_PNG | IMG_INIT_JPG;
 }
 
 std::optional<assett::id_type> assett::load(const std::string &file_path)

@@ -70,15 +70,6 @@ void app::initialize_subsystems()
         throw subsystem_initialization_failed(std::string("SDL initialization failed.").append(SDL_GetError()));
     }
 
-    if (int initialized_flags = IMG_Init(assett::supported_image_types()); initialized_flags != assett::supported_image_types())
-    {
-        throw subsystem_initialization_failed(
-            std::string("SDL Image initilaization failed. requested: ")
-                .append(std::to_string(assett::supported_image_types()))
-                .append("initialized: ")
-                .append(std::to_string(initialized_flags)));
-    }
-
     display::initialize(_configuration.title);
     rendering_engine::initialize(display::window());
     assett::initialize(*SDL_GetRenderer(&display::window()));
