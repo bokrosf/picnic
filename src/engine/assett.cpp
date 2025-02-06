@@ -6,7 +6,7 @@
 
 namespace
 {
-    SDL_Renderer *renderer;
+    SDL_Renderer *renderer = nullptr;
     assett::id_type last_loaded_id;
     std::unordered_map<assett::id_type, SDL_Texture *> textures;
 }
@@ -25,6 +25,7 @@ void assett::initialize(SDL_Renderer &renderer)
 void assett::shutdown()
 {
     unload_all();
+    renderer = nullptr;
 }
 
 std::optional<assett::id_type> assett::load(const std::string &file_path)
