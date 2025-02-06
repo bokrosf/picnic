@@ -14,6 +14,11 @@ void assett::initialize()
     last_loaded_id = -1;
 }
 
+void assett::shutdown()
+{
+    unload_all();
+}
+
 void assett::unload_all()
 {
     for (auto [id, t] : textures)
