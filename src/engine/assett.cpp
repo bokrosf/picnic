@@ -28,3 +28,10 @@ void assett::unload_all()
 
     textures.clear();
 }
+
+SDL_Texture *assett::texture(id_type id)
+{
+    auto it = textures.find(id);
+
+    return it != textures.end() ? it->second : nullptr;
+}
