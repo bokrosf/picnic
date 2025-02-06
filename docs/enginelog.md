@@ -2,6 +2,11 @@
 
 Engine architectural decisions, problems. Used as a development diary to look back later on the process.
 
+# Unsubscribe all
+2025-02-02
+
+Client can unsubscribe from all the messages they subscribed with a single function call. The solution required storing the subscribed message types per subscribed objects. This way the code can easily find the subscriptions that are stored by the reverse order mapping.
+
 # Imported engine code from snake project
 2025-02-01
 
