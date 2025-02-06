@@ -81,6 +81,7 @@ void app::initialize_subsystems()
 
     display::initialize(_configuration.title);
     rendering_engine::initialize(display::window());
+    assett::initialize(*SDL_GetRenderer(&display::window()));
     scene_loader::initialize();
 }
 
@@ -88,6 +89,7 @@ void app::shutdown()
 {
     messenger::unsubscribe_all(this);
     scene_loader::shutdown();
+    assett::shutdown();
     rendering_engine::shutdown();
     display::shutdown();
     IMG_Quit();
