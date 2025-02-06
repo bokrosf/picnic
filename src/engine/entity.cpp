@@ -180,6 +180,5 @@ void entity::erase_destroyed_components()
         }
     }
     
-    auto removed_begin = std::remove_if(_components.begin(), _components.end(), [](component *c) { return c == nullptr; } );
-    _components.erase(removed_begin, _components.end());
+    std::erase_if(_components, [](auto c) { return c == nullptr; } );
 }
