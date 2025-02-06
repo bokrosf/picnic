@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <engine/assett.h>
 
 namespace
@@ -24,6 +25,19 @@ void assett::initialize(SDL_Renderer &renderer)
 void assett::shutdown()
 {
     unload_all();
+}
+
+std::optional<assett::id_type> assett::load(const std::string &file_path)
+{
+    std::optional<assett::id_type> id;
+
+    if (SDL_Texture *texture = IMG_LoadTexture(renderer, file_path.c_str()))
+    {
+        textures[++last_loaded_id] = texture;
+        id = last_loaded_id;
+    }
+
+    return id;
 }
 
 void assett::unload_all()
