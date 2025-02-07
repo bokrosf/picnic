@@ -7,91 +7,96 @@
 
 namespace
 {
+    using namespace game_time;
+
     const float precision = 0.001F;
 
     struct context
     {
-        context(game_time::context_id, Uint64 started_at);
+        context(context_id, Uint64 started_at);
 
-        const game_time::context_id id;
+        const context_id id;
         Uint64 switched_away;
         Uint64 frame_started_at;
         float delta;
         std::vector<time_point *> bound_times;
     };
 
-    std::unordered_map<game_time::context_id, context> contexts;
+    std::unordered_map<context_id, context> contexts;
     context *current = nullptr;
-}
 
-::context::context(game_time::context_id id, Uint64 started_at)
-    : id(id)
-    , switched_away(0)
-    , frame_started_at(started_at)
-    , delta(0)
-{
-}
-
-void game_time::reset(game_time::context_id id)
-{
-    Uint64 now = SDL_GetTicks64();
-
-    if (current)
+    context::context(context_id id, Uint64 started_at)
+        : id(id)
+        , switched_away(0)
+        , frame_started_at(started_at)
+        , delta(0)
     {
-        current->switched_away = now;
-    }
-
-    current = &contexts.try_emplace(id, id, now).first->second;
-    current->frame_started_at = now;
-    current->delta = 0;
-    float switch_duration = precision * (now - current->switched_away);
-
-    for (auto *bounded : current->bound_times)
-    {
-        bounded->_seconds += switch_duration;
     }
 }
 
-void game_time::erase(context_id id)
+namespace game_time
 {
-    if (current && current->id == id)
+    void reset(context_id id)
     {
-        current = nullptr;
+        Uint64 now = SDL_GetTicks64();
+
+        if (current)
+        {
+            current->switched_away = now;
+        }
+
+        current = &contexts.try_emplace(id, id, now).first->second;
+        current->frame_started_at = now;
+        current->delta = 0;
+        float switch_duration = precision * (now - current->switched_away);
+
+        for (auto *bounded : current->bound_times)
+        {
+            bounded->_seconds += switch_duration;
+        }
     }
 
-    contexts.erase(id);
-}
+    void erase(context_id id)
+    {
+        if (current && current->id == id)
+        {
+            current = nullptr;
+        }
 
-void game_time::end_frame()
-{
-    Uint64 now = SDL_GetTicks64();
-    current->delta = precision * (now - current->frame_started_at);
-    current->frame_started_at = now;
-}
+        contexts.erase(id);
+    }
 
-float game_time::delta()
-{
-    return current->delta;
-}
+    void end_frame()
+    {
+        Uint64 now = SDL_GetTicks64();
+        current->delta = precision * (now - current->frame_started_at);
+        current->frame_started_at = now;
+    }
 
-float game_time::now()
-{
-    return precision * current->frame_started_at;
-}
+    float delta()
+    {
+        return current->delta;
+    }
 
-float game_time::real_now()
-{
-    return precision * SDL_GetTicks64();
-}
+    float now()
+    {
+        return precision * current->frame_started_at;
+    }
 
-game_time::context_id game_time::bind(time_point &time)
-{
-    current->bound_times.emplace_back(&time);
+    float real_now()
+    {
+        return precision * SDL_GetTicks64();
+    }
 
-    return current->id;
-}
+    context_id bind(time_point &time)
+    {
+        current->bound_times.emplace_back(&time);
 
-void game_time::unbind(context_id id, time_point &bounded)
-{
-    std::erase(contexts.at(id).bound_times, &bounded);
+        return current->id;
+    }
+
+    void unbind(context_id id, time_point &bounded)
+    {
+        std::erase(contexts.at(id).bound_times, &bounded);
+    }
 }

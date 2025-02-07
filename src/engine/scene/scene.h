@@ -14,9 +14,11 @@
 class scene
 {
 public:
+    using id_type = unsigned int;
+
     virtual ~scene();
     virtual void initialize() = 0;
-    int id() const;
+    id_type id() const;
     void update_root_status(entity &entity);
     void add(entity &entity);
     void add(component &component);
@@ -30,12 +32,12 @@ public:
     std::generator<entity &> find_all_tagged_entity(const std::string &tag) const;
     std::generator<entity &> traverse(std::function<bool(const entity *entity)> filter) const;
 protected:
-    scene(int id);
+    scene(id_type id);
 private:
     void destroy_components();
     void destroy_entities();
     
-    const int _id;
+    const id_type _id;
     std::unordered_set<entity *> _root_entities;
     std::unordered_set<entity *> _entities_with_destroyed_component;
     std::unordered_set<entity *> _entities_to_destroy;

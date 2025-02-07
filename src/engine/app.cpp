@@ -40,7 +40,7 @@ void app::run()
     
     while (_running)
     {
-        const int original_scene_id = scene_loader::active().id();
+        const scene::id_type original_scene_id = scene_loader::active().id();
         scene_loader::active().initialize_objects();
         collision_engine::detect_collisions(scene_loader::active());
         input::read_events();

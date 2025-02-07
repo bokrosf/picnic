@@ -35,62 +35,62 @@ namespace messenger
 
         void unsubscribe(void *recipient, const std::type_index &message_type);
     }
-}
 
-template<typename Message>
-void messenger::send(const Message &message)
-{
-    using namespace messenger::detail;
-
-    std::type_index message_type = std::type_index(typeid(Message));
-
-    if (!subscriptions_by_type.contains(message_type))
+    template<typename Message>
+    void send(const Message &message)
     {
-        return;
-    }
+        using namespace detail;
 
-    sending = true;
+        std::type_index message_type = std::type_index(typeid(Message));
 
-    for (auto &s : subscriptions_by_type[message_type])
-    {
-        s.handler(&message);
-    }
-
-    sending = false;
-    std::erase_if(subscriptions_by_type[message_type], [](const auto &s) { return s.removed; });
-
-    if (subscriptions_by_type[message_type].empty())
-    {
-        subscriptions_by_type.erase(message_type);
-    }
-}
-
-template<typename Message, typename Recipient>
-void messenger::subscribe(Recipient *recipient, void (Recipient::* handler)(const Message &))
-{
-    using namespace messenger::detail;
-
-    std::type_index message_type = std::type_index(typeid(Message));
-
-    subscriptions_by_type[message_type].emplace_back(subscription
-    {
-        .recipient = recipient,
-        .removed = false,
-        .handler = [recipient, handler](const void *message)
+        if (!subscriptions_by_type.contains(message_type))
         {
-            (recipient->*handler)(*reinterpret_cast<const Message *>(message));
+            return;
         }
-    });
 
-    subscriptions_by_recipient[recipient].push_back(message_type);
-}
+        sending = true;
 
-template<typename Message>
-void messenger::unsubscribe(void *recipient)
-{
-    using namespace messenger::detail;
+        for (auto &s : subscriptions_by_type[message_type])
+        {
+            s.handler(&message);
+        }
 
-    unsubscribe(recipient, std::type_index(typeid(Message)));
+        sending = false;
+        std::erase_if(subscriptions_by_type[message_type], [](const auto &s) { return s.removed; });
+
+        if (subscriptions_by_type[message_type].empty())
+        {
+            subscriptions_by_type.erase(message_type);
+        }
+    }
+
+    template<typename Message, typename Recipient>
+    void subscribe(Recipient *recipient, void (Recipient::* handler)(const Message &))
+    {
+        using namespace detail;
+
+        std::type_index message_type = std::type_index(typeid(Message));
+
+        subscriptions_by_type[message_type].emplace_back(subscription
+        {
+            .recipient = recipient,
+            .removed = false,
+            .handler = [recipient, handler](const void *message)
+            {
+                (recipient->*handler)(*reinterpret_cast<const Message *>(message));
+            }
+        });
+
+        subscriptions_by_recipient[recipient].push_back(message_type);
+    }
+
+    template<typename Message>
+    void unsubscribe(void *recipient)
+    {
+        using namespace detail;
+
+        unsubscribe(recipient, std::type_index(typeid(Message)));
+    }
 }
 
 #endif

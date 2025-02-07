@@ -7,95 +7,94 @@
 
 namespace
 {
-    const int default_loaded_id = -1;
+    using namespace scene_loader;
+
     scene *active_scene = nullptr;
-    std::queue<scene_loader::operation> operations;
+    std::queue<operation> operations;
 }
 
-int scene_loader::detail::last_loaded_id = default_loaded_id;
-std::unordered_map<int, scene *> scene_loader::detail::loaded_scenes;
-
-void scene_loader::initialize()
+namespace scene_loader
 {
     using namespace detail;
 
-    last_loaded_id = default_loaded_id;
-    active_scene = nullptr;
-}
-
-void scene_loader::shutdown()
-{
-    unload_all();
-}
-
-void scene_loader::unload(int id)
-{
-    using namespace scene_loader::detail;
-
-    if (!loaded_scenes.contains(id))
+    void initialize()
     {
-        throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
-    }
-
-    auto node = loaded_scenes.extract(id);
-    
-    if (node.mapped() == active_scene)
-    {
+        last_loaded_id = 0;
         active_scene = nullptr;
     }
-    
-    delete node.mapped();
-    messenger::send(scene_destroyed{id});
-}
 
-void scene_loader::unload_all()
-{
-    using namespace scene_loader::detail;
-
-    for (auto [id, scene] : loaded_scenes)
+    void shutdown()
     {
-        delete scene;
+        unload_all();
+    }
+
+    void unload(scene::id_type id)
+    {
+        if (!loaded_scenes.contains(id))
+        {
+            throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
+        }
+
+        auto node = loaded_scenes.extract(id);
+
+        if (node.mapped() == active_scene)
+        {
+            active_scene = nullptr;
+        }
+
+        delete node.mapped();
         messenger::send(scene_destroyed{id});
     }
 
-    loaded_scenes.clear();
-    active_scene = nullptr;
-}
-
-void scene_loader::activate(int id)
-{
-    using namespace scene_loader::detail;
-
-    if (!loaded_scenes.contains(id))
+    void unload_all()
     {
-        throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
+        for (auto [id, scene] : loaded_scenes)
+        {
+            delete scene;
+            messenger::send(scene_destroyed{id});
+        }
+
+        loaded_scenes.clear();
+        active_scene = nullptr;
     }
 
-    active_scene = loaded_scenes[id];
-}
-
-scene &scene_loader::active()
-{
-    using namespace scene_loader::detail;
-
-    if (!active_scene)
+    void activate(scene::id_type id)
     {
-        throw std::runtime_error("There is no active scene.");
+        if (!loaded_scenes.contains(id))
+        {
+            throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
+        }
+
+        active_scene = loaded_scenes[id];
     }
 
-    return *active_scene;
-}
-
-void scene_loader::queue(operation operation)
-{
-    operations.push(operation);
-}
-
-void scene_loader::commit()
-{
-    while (!operations.empty())
+    scene &active()
     {
-        operations.front()();
-        operations.pop();
+        if (!active_scene)
+        {
+            throw std::runtime_error("There is no active scene.");
+        }
+
+        return *active_scene;
     }
+
+    void queue(operation operation)
+    {
+        operations.push(operation);
+    }
+
+    void commit()
+    {
+        while (!operations.empty())
+        {
+            operations.front()();
+            operations.pop();
+        }
+    }
+}
+
+namespace scene_loader::detail
+{
+    scene::id_type last_loaded_id;
+    std::unordered_map<scene::id_type, scene *> loaded_scenes;
 }

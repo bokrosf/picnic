@@ -5,7 +5,7 @@ class time_point;
 
 namespace game_time
 {
-    using context_id = int;
+    using context_id = unsigned int;
 
     void reset(context_id id);
     void erase(context_id id);

@@ -48,26 +48,29 @@ namespace
     }
 }
 
-void collision_engine::detect_collisions(const scene &scene)
+namespace collision_engine
 {
-    std::vector<box_collider *> colliders = collect_colliders(scene);
-
-    for (box_collider *current : colliders)
+    void detect_collisions(const scene &scene)
     {
-        std::unordered_set<entity *> collided_entities;
-        
-        for (box_collider *other : colliders | std::views::filter([current](box_collider *c) { return c != current; }))
+        std::vector<box_collider *> colliders = collect_colliders(scene);
+
+        for (box_collider *current : colliders)
         {
-            glm::vec2 difference = other->transform().position() - current->transform().position();
-            float x_threshold = std::abs(current->area().x) + std::abs(other->area().x);
-            float y_threshold = std::abs(current->area().y) + std::abs(other->area().y);
+            std::unordered_set<entity *> collided_entities;
 
-            if (std::abs(difference.x) < x_threshold && std::abs(difference.y) < y_threshold)
+            for (box_collider *other : colliders | std::views::filter([current](box_collider *c) { return c != current; }))
             {
-                collided_entities.insert(&other->attached_to());
-            }
-        }
+                glm::vec2 difference = other->transform().position() - current->transform().position();
+                float x_threshold = std::abs(current->area().x) + std::abs(other->area().x);
+                float y_threshold = std::abs(current->area().y) + std::abs(other->area().y);
 
-        notify_collided_entities(*current, collided_entities);
+                if (std::abs(difference.x) < x_threshold && std::abs(difference.y) < y_threshold)
+                {
+                    collided_entities.insert(&other->attached_to());
+                }
+            }
+
+            notify_collided_entities(*current, collided_entities);
+        }
     }
 }

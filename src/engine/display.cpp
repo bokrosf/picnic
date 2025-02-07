@@ -26,63 +26,66 @@ namespace
     }
 }
 
-void display::initialize(const std::string &window_title)
+namespace display
 {
-    if (initialized)
+    void initialize(const std::string &window_title)
     {
-        throw std::logic_error("Display subsystem already initialized.");
-    }
+        if (initialized)
+        {
+            throw std::logic_error("Display subsystem already initialized.");
+        }
+
+        if (int display_count = SDL_GetNumVideoDisplays(); display_count < 1)
+        {
+            throw subsystem_initialization_failed(std::string("No video display available.").append(SDL_GetError()));
+        }
     
-    if (int display_count = SDL_GetNumVideoDisplays(); display_count < 1)
-    {
-        throw subsystem_initialization_failed(std::string("No video display available.").append(SDL_GetError()));
-    }
-   
-    SDL_DisplayMode display_mode = ::current_mode();
-    active_window = SDL_CreateWindow(
-        window_title.c_str(),
-        0,
-        0,
-        display_mode.w,
-        display_mode.h,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_DisplayMode display_mode = current_mode();
+        active_window = SDL_CreateWindow(
+            window_title.c_str(),
+            0,
+            0,
+            display_mode.w,
+            display_mode.h,
+            SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
-    if (!active_window)
-    {
-        throw subsystem_initialization_failed(std::string("SDL Window creation failed. ").append(SDL_GetError()));
-    }
+        if (!active_window)
+        {
+            throw subsystem_initialization_failed(std::string("SDL Window creation failed. ").append(SDL_GetError()));
+        }
 
-    SDL_ShowCursor(SDL_DISABLE);
-    initialized = true;
-}
-
-void display::shutdown()
-{
-    if (active_window)
-    {
-        SDL_DestroyWindow(active_window);
-        active_window = nullptr;
+        SDL_ShowCursor(SDL_DISABLE);
+        initialized = true;
     }
 
-    initialized = false;
-}
-
-SDL_Window &display::window()
-{
-    if (!initialized)
+    void shutdown()
     {
-        throw std::logic_error("Display subsystem must be initialized before querying the window.");
+        if (active_window)
+        {
+            SDL_DestroyWindow(active_window);
+            active_window = nullptr;
+        }
+
+        initialized = false;
     }
 
-    return *active_window;
-}
-
-SDL_DisplayMode display::current_mode()
-{
-    if (!initialized)
+    SDL_Window &window()
     {
-        throw std::logic_error("Display subsystem must be initialized before querying the current display mode.");
+        if (!initialized)
+        {
+            throw std::logic_error("Display subsystem must be initialized before querying the window.");
+        }
+
+        return *active_window;
     }
-    
-    return ::current_mode();
+
+    SDL_DisplayMode current_mode()
+    {
+        if (!initialized)
+        {
+            throw std::logic_error("Display subsystem must be initialized before querying the current display mode.");
+        }
+
+        return current_mode();
+    }
 }

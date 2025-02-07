@@ -11,55 +11,58 @@ namespace
     SDL_Renderer *native_renderer = nullptr;
 }
 
-void rendering_engine::initialize(SDL_Window &window)
+namespace rendering_engine
 {
-    if (native_renderer)
+    void initialize(SDL_Window &window)
     {
-        throw std::logic_error("Rendering engine already initialized.");
-    }
-
-    native_renderer = SDL_CreateRenderer(&window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-    if (!native_renderer)
-    {
-        throw subsystem_initialization_failed(std::string("SDL Renderer creation failed. ").append(SDL_GetError()));
-    }
-}
-
-void rendering_engine::shutdown()
-{
-    if (native_renderer)
-    {
-        SDL_DestroyRenderer(native_renderer);
-        native_renderer = nullptr;
-    }
-}
-
-void rendering_engine::render(const scene &scene)
-{
-    std::map<int, std::vector<renderer *>> rendering_layers;
-    auto entity_filter = [](const entity *e) { return e->active() && e->life_state() == life_state::alive; };
-    
-    for (const entity &entity : scene.traverse(entity_filter))
-    {
-        auto filter_renderer = [](const renderer *r) { return r->active() && r->life_state() == life_state::alive; };
-        
-        for (renderer *r : entity.all_attached_components<renderer>() | std::views::filter(filter_renderer))
+        if (native_renderer)
         {
-            rendering_layers[r->layer_order].push_back(r);
+            throw std::logic_error("Rendering engine already initialized.");
+        }
+
+        native_renderer = SDL_CreateRenderer(&window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+        if (!native_renderer)
+        {
+            throw subsystem_initialization_failed(std::string("SDL Renderer creation failed. ").append(SDL_GetError()));
         }
     }
 
-    SDL_SetRenderDrawColor(native_renderer, 0, 0, 0, 255);
-    SDL_RenderClear(native_renderer);
-
-    for (const auto &[layer, renderers] : rendering_layers)
+    void shutdown()
     {
-        for (renderer *r : renderers)
+        if (native_renderer)
         {
-            r->render(native_renderer);
+            SDL_DestroyRenderer(native_renderer);
+            native_renderer = nullptr;
         }
     }
 
-    SDL_RenderPresent(native_renderer);
+    void render(const scene &scene)
+    {
+        std::map<int, std::vector<renderer *>> rendering_layers;
+        auto entity_filter = [](const entity *e) { return e->active() && e->life_state() == life_state::alive; };
+
+        for (const entity &entity : scene.traverse(entity_filter))
+        {
+            auto filter_renderer = [](const renderer *r) { return r->active() && r->life_state() == life_state::alive; };
+
+            for (renderer *r : entity.all_attached_components<renderer>() | std::views::filter(filter_renderer))
+            {
+                rendering_layers[r->layer_order].push_back(r);
+            }
+        }
+
+        SDL_SetRenderDrawColor(native_renderer, 0, 0, 0, 255);
+        SDL_RenderClear(native_renderer);
+
+        for (const auto &[layer, renderers] : rendering_layers)
+        {
+            for (renderer *r : renderers)
+            {
+                r->render(native_renderer);
+            }
+        }
+
+        SDL_RenderPresent(native_renderer);
+    }
 }

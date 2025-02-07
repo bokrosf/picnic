@@ -1,26 +1,32 @@
 #include <stdexcept>
 #include <game/scene/scene_navigator.h>
 
-std::stack<int> scene_navigator::detail::scenes;
-
-void scene_navigator::pop()
+namespace scene_navigator
 {
     using namespace detail;
 
-    scene_loader::queue([]()
+    void pop()
     {
-        if (scenes.empty())
+        scene_loader::queue([]()
         {
-            return;
-        }
+            if (scenes.empty())
+            {
+                return;
+            }
 
-        scene_loader::unload(scenes.top());
-        scenes.pop();
-        scene_loader::activate(scenes.top());
-    });
+            scene_loader::unload(scenes.top());
+            scenes.pop();
+            scene_loader::activate(scenes.top());
+        });
+    }
+
+    void reset_top()
+    {
+        scene_loader::queue([]() { scene_loader::active().reset(); });
+    }
 }
 
-void scene_navigator::reset_top()
+namespace scene_navigator::detail
 {
-    scene_loader::queue([]() { scene_loader::active().reset(); });
+    std::stack<scene::id_type> scenes;
 }
