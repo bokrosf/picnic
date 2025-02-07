@@ -7,9 +7,11 @@
 
 namespace
 {
+    using namespace assett;
+
     SDL_Renderer *renderer = nullptr;
-    assett::id_type last_loaded_id;
-    std::unordered_map<assett::id_type, SDL_Texture *> textures;
+    id_type last_loaded_id;
+    std::unordered_map<id_type, SDL_Texture *> textures;
 }
 
 namespace assett

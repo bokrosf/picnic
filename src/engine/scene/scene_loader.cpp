@@ -7,8 +7,10 @@
 
 namespace
 {
+    using namespace scene_loader;
+
     scene *active_scene = nullptr;
-    std::queue<scene_loader::operation> operations;
+    std::queue<operation> operations;
 }
 
 namespace scene_loader

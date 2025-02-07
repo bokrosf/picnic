@@ -7,23 +7,25 @@
 
 namespace
 {
+    using namespace game_time;
+
     const float precision = 0.001F;
 
     struct context
     {
-        context(game_time::context_id, Uint64 started_at);
+        context(context_id, Uint64 started_at);
 
-        const game_time::context_id id;
+        const context_id id;
         Uint64 switched_away;
         Uint64 frame_started_at;
         float delta;
         std::vector<time_point *> bound_times;
     };
 
-    std::unordered_map<game_time::context_id, context> contexts;
+    std::unordered_map<context_id, context> contexts;
     context *current = nullptr;
 
-    context::context(game_time::context_id id, Uint64 started_at)
+    context::context(context_id id, Uint64 started_at)
         : id(id)
         , switched_away(0)
         , frame_started_at(started_at)
