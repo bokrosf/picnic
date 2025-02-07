@@ -28,5 +28,5 @@ namespace scene_navigator
 
 namespace scene_navigator::detail
 {
-    std::stack<int> scenes;
+    std::stack<scene::id_type> scenes;
 }

@@ -7,7 +7,7 @@
 
 namespace
 {
-    const int default_loaded_id = -1;
+    const scene::id_type default_loaded_id = 0;
     scene *active_scene = nullptr;
     std::queue<scene_loader::operation> operations;
 }
@@ -27,7 +27,7 @@ namespace scene_loader
         unload_all();
     }
 
-    void unload(int id)
+    void unload(scene::id_type id)
     {
         if (!loaded_scenes.contains(id))
         {
@@ -57,7 +57,7 @@ namespace scene_loader
         active_scene = nullptr;
     }
 
-    void activate(int id)
+    void activate(scene::id_type id)
     {
         if (!loaded_scenes.contains(id))
         {
@@ -94,6 +94,6 @@ namespace scene_loader
 
 namespace scene_loader::detail
 {
-    int last_loaded_id = default_loaded_id;
-    std::unordered_map<int, scene *> loaded_scenes;
+    scene::id_type last_loaded_id = default_loaded_id;
+    std::unordered_map<scene::id_type, scene *> loaded_scenes;
 }

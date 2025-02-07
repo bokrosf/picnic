@@ -16,24 +16,24 @@ namespace scene_loader
 
     template<typename Scene, typename... Args>
         requires std::derived_from<Scene, scene>
-    int load(Args &&...args);
+    scene::id_type load(Args &&...args);
 
-    void unload(int id);
+    void unload(scene::id_type id);
     void unload_all();
-    void activate(int id);
+    void activate(scene::id_type id);
     scene &active();
     void queue(operation operation);
     void commit();
 
     namespace detail
     {
-        extern int last_loaded_id;
-        extern std::unordered_map<int, scene *> loaded_scenes;
+        extern scene::id_type last_loaded_id;
+        extern std::unordered_map<scene::id_type, scene *> loaded_scenes;
     }
 
     template<typename Scene, typename... Args>
         requires std::derived_from<Scene, scene>
-    int load(Args &&...args)
+    scene::id_type load(Args &&...args)
     {
         using namespace detail;
 

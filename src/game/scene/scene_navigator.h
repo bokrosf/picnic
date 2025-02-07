@@ -22,7 +22,7 @@ namespace scene_navigator
 
     namespace detail
     {
-        extern std::stack<int> scenes;
+        extern std::stack<scene::id_type> scenes;
     }
 
     template<typename Scene, typename... Args>
@@ -33,7 +33,7 @@ namespace scene_navigator
 
         scene_loader::queue([args...]()
         {
-            int scene_id = scene_loader::load<Scene>(args...);
+            scene::id_type scene_id = scene_loader::load<Scene>(args...);
             scenes.push(scene_id);
             scene_loader::activate(scene_id);
             scene_loader::active().initialize();

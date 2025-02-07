@@ -7,7 +7,7 @@
 #include <engine/life_state.h>
 #include <engine/scene/scene.h>
 
-scene::scene(int id)
+scene::scene(id_type id)
     : _id(id)
 {
 }
@@ -20,7 +20,7 @@ scene::~scene()
     }
 }
 
-int scene::id() const
+scene::id_type scene::id() const
 {
     return _id;
 }
