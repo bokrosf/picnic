@@ -24,40 +24,40 @@ namespace scene_navigator
     {
         extern std::stack<int> scenes;
     }
-}
 
-template<typename Scene, typename... Args>
-    requires std::derived_from<Scene, scene>
-void scene_navigator::push(Args &&...args)
-{
-    using namespace detail;
-
-    scene_loader::queue([args...]()
+    template<typename Scene, typename... Args>
+        requires std::derived_from<Scene, scene>
+    void push(Args &&...args)
     {
-        int scene_id = scene_loader::load<Scene>(args...);
-        scenes.push(scene_id);
-        scene_loader::activate(scene_id);
-        scene_loader::active().initialize();
-    });
-}
+        using namespace detail;
 
-template<typename Scene, typename... Args>
-    requires std::derived_from<Scene, scene>
-void scene_navigator::reset_root(Args &&...args)
-{
-    using namespace detail;
-
-    scene_loader::queue([args...]()
-    {
-        scene_loader::unload_all();
-
-        while (!scenes.empty())
+        scene_loader::queue([args...]()
         {
-            scenes.pop();
-        }
+            int scene_id = scene_loader::load<Scene>(args...);
+            scenes.push(scene_id);
+            scene_loader::activate(scene_id);
+            scene_loader::active().initialize();
+        });
+    }
 
-        push<Scene>(std::forward<Args>(args)...);
-    });
+    template<typename Scene, typename... Args>
+        requires std::derived_from<Scene, scene>
+    void reset_root(Args &&...args)
+    {
+        using namespace detail;
+
+        scene_loader::queue([args...]()
+        {
+            scene_loader::unload_all();
+
+            while (!scenes.empty())
+            {
+                scenes.pop();
+            }
+
+            push<Scene>(std::forward<Args>(args)...);
+        });
+    }
 }
 
 #endif

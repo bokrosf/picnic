@@ -37,51 +37,51 @@ namespace logger
         template<typename... Args>
         void write(log_level level, Args &&...args);
     }
-}
 
-template<typename... Args>
-void logger::debug(Args &&...args)
-{
-    using namespace detail;
-
-    write(log_level::debug, args...);
-}
-
-template<typename... Args>
-void logger::information(Args &&...args)
-{
-    using namespace detail;
-
-    write(log_level::information, args...);
-}
-
-template<typename... Args>
-void logger::warning(Args &&...args)
-{
-    using namespace detail;
-
-    write(log_level::warning, args...);
-}
-
-template<typename... Args>
-void logger::error(Args &&...args)
-{
-    using namespace detail;
-
-    write(log_level::error, args...);
-}
-
-template<typename... Args>
-void logger::detail::write(detail::log_level level, Args &&...args)
-{
-    if (!destination)
+    template<typename... Args>
+    void debug(Args &&...args)
     {
-        return;
+        using namespace detail;
+
+        write(log_level::debug, args...);
     }
 
-    *destination << std::format("{:%H:%M:%S}", std::chrono::system_clock::now());
-    *destination << "|" << level_name(level) << "|";
-    (*destination << ... << args) << std::endl;
+    template<typename... Args>
+    void information(Args &&...args)
+    {
+        using namespace detail;
+
+        write(log_level::information, args...);
+    }
+
+    template<typename... Args>
+    void warning(Args &&...args)
+    {
+        using namespace detail;
+
+        write(log_level::warning, args...);
+    }
+
+    template<typename... Args>
+    void error(Args &&...args)
+    {
+        using namespace detail;
+
+        write(log_level::error, args...);
+    }
+
+    template<typename... Args>
+    void detail::write(detail::log_level level, Args &&...args)
+    {
+        if (!destination)
+        {
+            return;
+        }
+
+        *destination << std::format("{:%H:%M:%S}", std::chrono::system_clock::now());
+        *destination << "|" << level_name(level) << "|";
+        (*destination << ... << args) << std::endl;
+    }
 }
 
 #endif

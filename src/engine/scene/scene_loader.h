@@ -30,28 +30,28 @@ namespace scene_loader
         extern int last_loaded_id;
         extern std::unordered_map<int, scene *> loaded_scenes;
     }
-}
 
-template<typename Scene, typename... Args>
-    requires std::derived_from<Scene, scene>
-int scene_loader::load(Args &&...args)
-{
-    using namespace detail;
-    
-    Scene *scene = nullptr;
-
-    try
+    template<typename Scene, typename... Args>
+        requires std::derived_from<Scene, scene>
+    int load(Args &&...args)
     {
-        scene = new Scene(++last_loaded_id, std::forward<Args>(args)...);
-        loaded_scenes[scene->id()] = scene;
-    }
-    catch (...)
-    {
-        delete scene;
-        throw;
-    }
+        using namespace detail;
 
-    return scene->id();
+        Scene *scene = nullptr;
+
+        try
+        {
+            scene = new Scene(++last_loaded_id, std::forward<Args>(args)...);
+            loaded_scenes[scene->id()] = scene;
+        }
+        catch (...)
+        {
+            delete scene;
+            throw;
+        }
+
+        return scene->id();
+    }
 }
 
 #endif
