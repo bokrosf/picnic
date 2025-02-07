@@ -7,7 +7,6 @@
 
 namespace
 {
-    const scene::id_type default_loaded_id = 0;
     scene *active_scene = nullptr;
     std::queue<scene_loader::operation> operations;
 }
@@ -18,7 +17,7 @@ namespace scene_loader
 
     void initialize()
     {
-        last_loaded_id = default_loaded_id;
+        last_loaded_id = 0;
         active_scene = nullptr;
     }
 
@@ -94,6 +93,6 @@ namespace scene_loader
 
 namespace scene_loader::detail
 {
-    scene::id_type last_loaded_id = default_loaded_id;
+    scene::id_type last_loaded_id;
     std::unordered_map<scene::id_type, scene *> loaded_scenes;
 }
