@@ -40,7 +40,7 @@ namespace display
             throw subsystem_initialization_failed(std::string("No video display available.").append(SDL_GetError()));
         }
     
-        SDL_DisplayMode display_mode = current_mode();
+        SDL_DisplayMode display_mode = ::current_mode();
         active_window = SDL_CreateWindow(
             window_title.c_str(),
             0,
@@ -86,6 +86,6 @@ namespace display
             throw std::logic_error("Display subsystem must be initialized before querying the current display mode.");
         }
 
-        return current_mode();
+        return ::current_mode();
     }
 }
