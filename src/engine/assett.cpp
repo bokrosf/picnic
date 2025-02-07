@@ -34,7 +34,7 @@ namespace assett
         }
 
         ::renderer = &renderer;
-        last_loaded_id = -1;
+        last_loaded_id = 0;
     }
 
     void shutdown()
