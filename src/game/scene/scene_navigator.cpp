@@ -1,14 +1,12 @@
 #include <stdexcept>
 #include <game/scene/scene_navigator.h>
 
-std::stack<int> scene_navigator::detail::scenes;
-
 namespace scene_navigator
 {
+    using namespace detail;
+
     void pop()
     {
-        using namespace detail;
-
         scene_loader::queue([]()
         {
             if (scenes.empty())
@@ -26,4 +24,9 @@ namespace scene_navigator
     {
         scene_loader::queue([]() { scene_loader::active().reset(); });
     }
+}
+
+namespace scene_navigator::detail
+{
+    std::stack<int> scenes;
 }

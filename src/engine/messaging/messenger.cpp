@@ -1,23 +1,26 @@
 #include <engine/messaging/messenger.h>
 
-std::unordered_map<std::type_index, std::vector<messenger::detail::subscription>> messenger::detail::subscriptions_by_type;
-std::unordered_map<void *, std::vector<std::type_index>> messenger::detail::subscriptions_by_recipient;
-bool messenger::detail::sending = false;
-
 namespace messenger
 {
+    using namespace detail;
+
     void unsubscribe_all(void *recipient)
     {
-        using namespace detail;
-
         while (subscriptions_by_recipient.contains(recipient)
             && !subscriptions_by_recipient[recipient].empty())
         {
             unsubscribe(recipient, subscriptions_by_recipient[recipient].front());
         }
     }
+}
 
-    void detail::unsubscribe(void *recipient, const std::type_index &message_type)
+namespace messenger::detail
+{
+    std::unordered_map<std::type_index, std::vector<subscription>> subscriptions_by_type;
+    std::unordered_map<void *, std::vector<std::type_index>> subscriptions_by_recipient;
+    bool sending = false;
+
+    void unsubscribe(void *recipient, const std::type_index &message_type)
     {
         if (!subscriptions_by_type.contains(message_type))
         {

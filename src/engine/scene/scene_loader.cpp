@@ -12,15 +12,12 @@ namespace
     std::queue<scene_loader::operation> operations;
 }
 
-int scene_loader::detail::last_loaded_id = default_loaded_id;
-std::unordered_map<int, scene *> scene_loader::detail::loaded_scenes;
-
 namespace scene_loader
 {
+    using namespace detail;
+
     void initialize()
     {
-        using namespace detail;
-
         last_loaded_id = default_loaded_id;
         active_scene = nullptr;
     }
@@ -32,8 +29,6 @@ namespace scene_loader
 
     void unload(int id)
     {
-        using namespace detail;
-
         if (!loaded_scenes.contains(id))
         {
             throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
@@ -52,8 +47,6 @@ namespace scene_loader
 
     void unload_all()
     {
-        using namespace detail;
-
         for (auto [id, scene] : loaded_scenes)
         {
             delete scene;
@@ -66,8 +59,6 @@ namespace scene_loader
 
     void activate(int id)
     {
-        using namespace detail;
-
         if (!loaded_scenes.contains(id))
         {
             throw std::invalid_argument(std::string("No scene loaded with the given id. id: ").append(std::to_string(id)));
@@ -78,8 +69,6 @@ namespace scene_loader
 
     scene &active()
     {
-        using namespace detail;
-
         if (!active_scene)
         {
             throw std::runtime_error("There is no active scene.");
@@ -101,4 +90,10 @@ namespace scene_loader
             operations.pop();
         }
     }
+}
+
+namespace scene_loader::detail
+{
+    int last_loaded_id = default_loaded_id;
+    std::unordered_map<int, scene *> loaded_scenes;
 }

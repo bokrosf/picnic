@@ -1,15 +1,18 @@
 #include <engine/logging/logger.h>
 
-std::ostream *logger::detail::destination = nullptr;
-
 namespace logger
 {
     void destination(std::ostream &stream)
     {
         detail::destination = &stream;
     }
+}
 
-    std::string detail::level_name(log_level level)
+namespace logger::detail
+{
+    std::ostream *destination = nullptr;
+
+    std::string level_name(log_level level)
     {
         switch (level)
         {
