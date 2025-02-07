@@ -29,6 +29,7 @@ FetchContent_MakeAvailable(glm SDL2 SDL2_image)
 add_executable("${PROJECT_NAME}")
 add_subdirectory(src/engine)
 add_subdirectory(src/game)
+target_compile_options("${PROJECT_NAME}" PRIVATE -Wall)
 
 target_link_libraries("${PROJECT_NAME}"
   PRIVATE glm::glm-header-only
