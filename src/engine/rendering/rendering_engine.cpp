@@ -20,12 +20,14 @@ namespace rendering_engine
             throw std::logic_error("Rendering engine already initialized.");
         }
 
-        native_renderer = SDL_CreateRenderer(&window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        native_renderer = SDL_CreateRenderer(&window, nullptr);
 
         if (!native_renderer)
         {
             throw subsystem_initialization_failed(std::string("SDL Renderer creation failed. ").append(SDL_GetError()));
         }
+
+        SDL_SetRenderVSync(native_renderer, 1);
     }
 
     void shutdown()

@@ -2,7 +2,7 @@
 #define ENGINE_RENDERING_RENDERER_H
 
 #include <optional>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <engine/component/behavior.h>
 #include <engine/rendering/material.h>
 

@@ -8,23 +8,18 @@ include(FetchContent)
 
 FetchContent_Declare(
   glm
-  GIT_REPOSITORY https://github.com/g-truc/glm
-  GIT_TAG 0af55ccecd98d4e5a8d1fad7de25ba429d60e863 # v1.0.1
+  URL https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz
 )
 
 FetchContent_Declare(
-  SDL2
-  GIT_REPOSITORY https://github.com/libsdl-org/SDL
-  GIT_TAG f461d91cd265d7b9a44b4d472b1df0c0ad2855a0 # release-2.30.2
+  SDL3
+  URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.4.tar.gz
 )
 
-FetchContent_Declare(
-  SDL2_image
-  GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
-  GIT_TAG abcf63aa71b4e3ac32120fa9870a6500ddcdcc89 # release-2.8.2
-)
-
-FetchContent_MakeAvailable(glm SDL2 SDL2_image)
+set(SDL_LIBURING OFF)
+set(SDL_TEST_LIBRARY OFF)
+set(SDL_TESTS OFF)
+FetchContent_MakeAvailable(glm SDL3)
 
 add_executable("${PROJECT_NAME}")
 add_subdirectory(src/engine)
@@ -33,16 +28,10 @@ target_compile_options("${PROJECT_NAME}" PRIVATE -Wall)
 
 target_link_libraries("${PROJECT_NAME}"
   PRIVATE glm::glm-header-only
-  PRIVATE SDL2::SDL2main
-  PRIVATE SDL2::SDL2
-  PRIVATE SDL2_image::SDL2_image
+  PRIVATE SDL3::SDL3
 )
-
-file(
-  COPY "${SDL2_image_SOURCE_DIR}/include/SDL_image.h"
-  DESTINATION "${SDL2_BINARY_DIR}/include/SDL2"
-  PATTERN "*.h")
 
 target_include_directories("${PROJECT_NAME}"
   PRIVATE "src"
-  PRIVATE "${SDL2_BINARY_DIR}/include/")
+  PRIVATE "${SDL3_BINARY_DIR}/include/"
+)

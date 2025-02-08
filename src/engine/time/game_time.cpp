@@ -1,7 +1,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <engine/time/game_time.h>
 #include <engine/time/time_point.h>
 
@@ -38,7 +38,7 @@ namespace game_time
 {
     void reset(context_id id)
     {
-        Uint64 now = SDL_GetTicks64();
+        Uint64 now = SDL_GetTicks();
 
         if (current)
         {
@@ -68,7 +68,7 @@ namespace game_time
 
     void end_frame()
     {
-        Uint64 now = SDL_GetTicks64();
+        Uint64 now = SDL_GetTicks();
         current->delta = precision * (now - current->frame_started_at);
         current->frame_started_at = now;
     }
@@ -85,7 +85,7 @@ namespace game_time
 
     float real_now()
     {
-        return precision * SDL_GetTicks64();
+        return precision * SDL_GetTicks();
     }
 
     context_id bind(time_point &time)
