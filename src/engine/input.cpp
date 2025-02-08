@@ -20,9 +20,9 @@ namespace input
         }
     }
 
-    bool key_down(SDL_KeyCode key)
+    bool key_down(SDL_Keycode key)
     {
-        auto predicate = [key](const SDL_Event &event) { return event.type == SDL_KEYDOWN && event.key.keysym.sym == key; };
+        auto predicate = [key](const SDL_Event &event) { return event.type == SDL_EVENT_KEY_DOWN && event.key.key == key; };
 
         return std::any_of(events.begin(), events.end(), predicate);
     }

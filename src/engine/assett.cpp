@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <unordered_map>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL3/SDL.h>
 #include <engine/assett.h>
 #include <engine/subsystem_initialization_failed.h>
 
@@ -23,18 +22,6 @@ namespace assett
             throw std::logic_error("assett module already initialized.");
         }
 
-        int image_types = IMG_INIT_PNG | IMG_INIT_JPG;
-        int initialized_types = IMG_Init(image_types);
-
-        if (initialized_types != image_types)
-        {
-            throw subsystem_initialization_failed(
-                std::string("SDL Image initilaization failed. requested: ")
-                    .append(std::to_string((image_types)))
-                    .append("initialized: ")
-                    .append(std::to_string(initialized_types)));
-        }
-
         ::renderer = &renderer;
         last_loaded_id = 0;
     }
@@ -48,11 +35,18 @@ namespace assett
     std::optional<id_type> load(const std::string &file_path)
     {
         std::optional<id_type> id;
+        SDL_Surface *surface = SDL_LoadBMP(file_path.c_str());
 
-        if (SDL_Texture *texture = IMG_LoadTexture(renderer, file_path.c_str()))
+        if (!surface)
+        {
+            return id;
+        }
+
+        if (SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface))
         {
             textures[++last_loaded_id] = texture;
             id = last_loaded_id;
+            SDL_DestroySurface(surface);
         }
 
         return id;

@@ -1,5 +1,4 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL3/SDL.h>
 #include <engine/app.h>
 #include <engine/assett.h>
 #include <engine/collision/collision_engine.h>
@@ -65,7 +64,7 @@ void app::run()
 
 void app::initialize_subsystems()
 {
-    if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_VIDEO) != 0)
+    if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO))
     {
         throw subsystem_initialization_failed(std::string("SDL initialization failed.").append(SDL_GetError()));
     }
@@ -83,13 +82,12 @@ void app::shutdown()
     assett::shutdown();
     rendering_engine::shutdown();
     display::shutdown();
-    IMG_Quit();
     SDL_Quit();
 }
 
 void app::handle_user_input()
 {
-    if (input::occured(SDL_QUIT))
+    if (input::occured(SDL_EVENT_QUIT))
     {
         _running = false;
     }

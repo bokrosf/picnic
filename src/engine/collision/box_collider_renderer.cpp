@@ -12,21 +12,21 @@ void box_collider_renderer::render(SDL_Renderer *renderer)
     
     glm::vec2 begin = _collider->transform().position() + _collider->area();
     glm::vec2 end = _collider->transform().position() + glm::vec2(-_collider->area().x, _collider->area().y);
-    SDL_RenderDrawLineF(renderer, begin.x, begin.y, end.x, end.y);
+    SDL_RenderLine(renderer, begin.x, begin.y, end.x, end.y);
 
     begin = end;
     end = _collider->transform().position() + glm::vec2(-_collider->area().x, -_collider->area().y);
-    SDL_RenderDrawLineF(renderer, begin.x, begin.y, end.x, end.y);
+    SDL_RenderLine(renderer, begin.x, begin.y, end.x, end.y);
     
     begin = end;
     end = _collider->transform().position() + glm::vec2(_collider->area().x, -_collider->area().y);
-    SDL_RenderDrawLineF(renderer, begin.x, begin.y, end.x, end.y);
+    SDL_RenderLine(renderer, begin.x, begin.y, end.x, end.y);
     
     begin = end;
     end = _collider->transform().position() + glm::vec2(_collider->area().x, _collider->area().y);
-    SDL_RenderDrawLineF(renderer, begin.x, begin.y, end.x, end.y);
+    SDL_RenderLine(renderer, begin.x, begin.y, end.x, end.y);
 
     begin = _collider->transform().position();
     end = _collider->transform().position() + _collider->area();
-    SDL_RenderDrawLineF(renderer, begin.x, begin.y, end.x, end.y);
+    SDL_RenderLine(renderer, begin.x, begin.y, end.x, end.y);
 }

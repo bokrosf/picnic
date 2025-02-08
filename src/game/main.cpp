@@ -1,9 +1,10 @@
 #include <exception>
 #include <iostream>
+#include <SDL3/SDL_main.h>
 #include <engine/logging/logger.h>
 #include <game/picnic_app.h>
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     logger::destination(std::cout);
     app *app = nullptr;
