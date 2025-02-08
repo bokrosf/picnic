@@ -1,6 +1,6 @@
 # Picnic
 
-A 2D game where the player controls a bear to steal picnic baskets without being detected by the guards.
+2D game where the player controls a bear to steal picnic baskets without being detected by the guards.
 
 It's a project to learn how to make a game engine.
 
@@ -26,7 +26,7 @@ cmake --build .
 ```
 mkdir -p build/release
 cd build/release
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release ../..
 ```
 
 If necessary specify the generator. For example to use **MinGW** on Windows: ```cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release```

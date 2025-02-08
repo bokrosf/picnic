@@ -7,19 +7,16 @@
 int main(int argc, char *argv[])
 {
     logger::destination(std::cout);
-    app *app = nullptr;
 
     try
     {
-        app = new picnic_app(app_configuration{"Picnic"});
-        app->run();
+        picnic_app app(app_configuration{"Picnic"});
+        app.run();
     }
     catch (std::exception &ex)
     {
         logger::error(ex.what());
     }
-
-    delete app;
 
     return 0;
 }
