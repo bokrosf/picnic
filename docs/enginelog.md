@@ -2,6 +2,11 @@
 
 Engine architectural decisions, problems. Used as a development diary to look back later on the process.
 
+# Assett module
+2025-02-06
+
+Created assett module to load data used by the code. For know it can only load textures. In the future it will load audio and fonts too. Choose the modular approach because only one instance needed for storing the loaded assetts.
+
 # Unsubscribe all
 2025-02-02
 
