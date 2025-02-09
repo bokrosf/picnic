@@ -2,6 +2,13 @@
 
 Engine architectural decisions, problems. Used as a development diary to look back later on the process.
 
+# Migration to SDL3
+2025-02-07
+
+Migrated to SDL3 because it has more precise documentation and the API became more conviniently usable. Names are more specific and has stronger type definitions.
+
+Had to turn off liburing during building SDL3 because it could not find the necessary headers even though they are present. For a while I don't plan to use asynchronous IO.
+
 # Refactor
 2025-02-07
 
