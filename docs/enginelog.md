@@ -2,6 +2,30 @@
 
 Engine architectural decisions, problems. Used as a development diary to look back later on the process.
 
+# Migration to SDL3
+2025-02-07
+
+Migrated to SDL3 because it has more precise documentation and the API became more conviniently usable. Names are more specific and has stronger type definitions.
+
+Had to turn off liburing during building SDL3 because it could not find the necessary headers even though they are present. For a while I don't plan to use asynchronous IO.
+
+# Refactor
+2025-02-07
+
+- Loading bitmap images only. Bitmap is a easily interpretable and loseless format. SDL can load this format without external libraries so SDL_image library dependency can be eliminated.
+- Eliminated SDL_image library dependency.
+- Id generation:
+  - Id types changed to unsigned int and type aliased. Ids also generated from 0 where 0 denotes a not existing id like null pointer. Ids starting from 1 denotes an existing object's id. Ids monotously increasingly generated.
+  - Shutdown calls of modules don't reset the last generated id's value. It's the responsibility of the initialize function.
+- Namespaces:
+  - Nameless namespaces of module implementations use the module's namespace inside them.
+  - Implementations of a namespace put inside the namespace block instead of individually specifying the namespace of the function like at class member implementations.
+
+# Assett module
+2025-02-06
+
+Created assett module to load data used by the code. For know it can only load textures. In the future it will load audio and fonts too. Choose the modular approach because only one instance needed for storing the loaded assetts.
+
 # Unsubscribe all
 2025-02-02
 
