@@ -1,6 +1,7 @@
 #include <engine/assett.h>
 #include <engine/entity.h>
 #include <engine/rendering/texture_renderer.h>
+#include <game/assett.h>
 #include <game/scene/test_scene.h>
 
 namespace
@@ -27,7 +28,7 @@ namespace
 {
     void load_assetts()
     {
-        if (auto id = assett::load("assett/texture/test.bmp"))
+        if (auto id = assett::load(game::assett::texture::test))
         {
             entity &a = entity::create();
             texture tex{.id = *id, .scale = 5.0F * glm::vec2(1.0, 1.0)};
