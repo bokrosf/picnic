@@ -44,6 +44,7 @@ namespace assett
 
         if (SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface))
         {
+            SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
             textures[++last_loaded_id] = texture;
             id = last_loaded_id;
             SDL_DestroySurface(surface);
