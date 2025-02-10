@@ -29,7 +29,7 @@ namespace
 {
     void load_assetts()
     {
-        if (auto id = assett::load(game::assett::texture::test))
+        if (auto id = assett::load(game::assett::texture::bear))
         {
             entity &player = entity::create();
             texture tex{.id = *id, .scale = 5.0F * glm::vec2(1.0, 1.0)};
