@@ -6,13 +6,13 @@
 
 namespace game::assett
 {
-    const std::string root = std::filesystem::path("assett").string();
+    const std::filesystem::path root = std::filesystem::path("assett");
 }
 
 namespace game::assett::texture
 {
-    const std::string texture = std::filesystem::path(root).append("texture");
-    const std::string test = std::filesystem::path(texture).append("test.bmp");
+    const std::filesystem::path texture = root / "texture";
+    const std::string test = texture / "test.bmp";
 }
 
 #endif
