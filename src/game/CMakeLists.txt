@@ -1,3 +1,4 @@
+add_subdirectory(player)
 add_subdirectory(scene)
 
 target_sources("${PROJECT_NAME}" PRIVATE
