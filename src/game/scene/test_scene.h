@@ -7,6 +7,7 @@ class test_scene : public scene
 {
 public:
     test_scene(int id);
+    ~test_scene();
     void initialize() override;
 };
 
