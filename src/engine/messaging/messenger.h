@@ -50,7 +50,7 @@ namespace messenger
 
         sending = true;
 
-        for (auto &s : subscriptions_by_type[message_type])
+        for (auto &s : subscriptions_by_type[message_type] | std::views::filter([](const auto &s) { return !s.removed; }))
         {
             s.handler(&message);
         }
