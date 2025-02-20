@@ -48,6 +48,9 @@ namespace
         const unsigned int all_baskets = 4;
         player.add_component<basket_picker>(all_baskets);
 
+        assett_id = assett::load(game::assett::texture::basket);
+        tex = texture{.id = *assett_id, .scale = glm::vec2(5.0F)};
+
         for (unsigned int i = 1; i <= all_baskets; ++i)
         {
             entity &basket = entity::create();
