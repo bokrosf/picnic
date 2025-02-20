@@ -14,6 +14,7 @@ namespace game::assett::texture
     const std::filesystem::path texture = root / "texture";
     const std::string test = texture / "test.bmp";
     const std::string bear = texture / "bear.bmp";
+    const std::string basket = texture / "basket.bmp";
 }
 
 #endif
