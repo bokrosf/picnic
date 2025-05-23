@@ -47,7 +47,7 @@ namespace display
             throw subsystem_initialization_failed(std::string("No video display available.").append(SDL_GetError()));
         }
 
-        active_window = SDL_CreateWindow(window_title.c_str(), 0, 0, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS);
+        active_window = SDL_CreateWindow(window_title.c_str(), 0, 0, SDL_WINDOW_FULLSCREEN);
 
         if (!active_window)
         {
