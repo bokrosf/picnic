@@ -13,7 +13,7 @@ FetchContent_Declare(
 
 FetchContent_Declare(
   SDL3
-  URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.4.tar.gz
+  URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.14.tar.gz
 )
 
 set(SDL_LIBURING OFF)
